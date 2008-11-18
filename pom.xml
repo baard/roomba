@@ -3,6 +3,7 @@
 	<groupId>no.rehn</groupId>
 	<artifactId>roomba</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
+	<description>Control you Roomba 500-series</description>
 	<build>
 	  	<plugins>
 	  		<plugin>

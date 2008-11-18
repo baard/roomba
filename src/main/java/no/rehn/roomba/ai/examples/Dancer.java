@@ -28,12 +28,12 @@ public class Dancer extends AbstractRoombaProgram {
 	public void onTick(Roomba roomba, long currentTime) {
 		// forward/backward in 2 sec sin-curve
 		double velocity = Math.sin(MILLI_RADIANS * currentTime / 2);
-		// scale to -63..63
-		velocity = 63 * velocity;
+		// scale to -127..127
+		velocity = 127 * velocity;
 		// left/right in 4 sec sin-curve
 		double wheelDiff = Math.sin(MILLI_RADIANS * currentTime / 4);
-		// scale to -127..127
-		wheelDiff = 127 * wheelDiff;
+		// scale to -63..63
+		wheelDiff = 63 * wheelDiff;
 
 		roomba.setVelocity((int) velocity);
 		roomba.setWheelDiff((int) wheelDiff);

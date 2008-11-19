@@ -3,11 +3,11 @@ package no.rehn.roomba.ai.examples;
 import java.util.ArrayList;
 import java.util.List;
 
-import no.rehn.roomba.Roomba;
-import no.rehn.roomba.Roomba.Mode;
 import no.rehn.roomba.ai.AbstractRoombaProgram;
 import no.rehn.roomba.tunes.RTTTLParser;
 import no.rehn.roomba.tunes.Song;
+import no.rehn.roomba.ui.RoombaBean;
+import no.rehn.roomba.ui.RoombaBean.Mode;
 
 /**
  * A Jukebox
@@ -39,12 +39,12 @@ public class JukeBox extends AbstractRoombaProgram {
 		}
 	}
 	
-	public void onExit(Roomba roomba) {
+	public void onExit(RoombaBean roomba) {
 		// stops the currently playing song
 		roomba.setSong(null);
 	}
 
-	public void onStart(Roomba roomba) {
+	public void onStart(RoombaBean roomba) {
 		// must enable safe-mode before setting parameters
 		roomba.setMode(Mode.SAFE);
 		nextStart = 0;
@@ -52,7 +52,7 @@ public class JukeBox extends AbstractRoombaProgram {
 	
 
 	long nextStart;
-	public void onTick(Roomba roomba, long currentTime) {
+	public void onTick(RoombaBean roomba, long currentTime) {
 		if (currentTime > nextStart) {
 			// enqueue next song
 			int randomSong = (int) (Math.random() * songs.size());

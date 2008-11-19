@@ -18,9 +18,10 @@ import java.util.TooManyListenersException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+//TODO doc
 // txrx-lib
 public class RoombaConnectionRxTxImpl implements RoombaConnection {
-	Logger logger = LoggerFactory.getLogger(getClass());
+	final Logger logger = LoggerFactory.getLogger(getClass());
 
 	public static final String DEFAULT_PORT_NAME = "/dev/ttyS0";
 
@@ -70,7 +71,7 @@ public class RoombaConnectionRxTxImpl implements RoombaConnection {
 	}
 
 	private void sendWakeup() throws InterruptedException {
-		logger.info("Pull down RTS");
+		logger.info("Pulling down RTS");
 		port.setRTS(false);
         Thread.sleep(100);
         logger.info("Raising RTS");
@@ -134,36 +135,20 @@ public class RoombaConnectionRxTxImpl implements RoombaConnection {
 	}
 
 	private RoombaListener portListener = new RoombaListener();
-	private RoombaInputListener listener;
+	private RoombaConnectionListener listener;
 	
-	public void setListener(RoombaInputListener listener) {
+	public void setListener(RoombaConnectionListener listener) {
 		this.listener = listener;
 	}
 	
 	private class RoombaListener implements SerialPortEventListener {
 		public void serialEvent(SerialPortEvent event) {
 			try {
-				handleEvent(event);
+				listener.dataAvailable(inputStream);
 			} catch (IOException e) {
-				// handle better
-				logger.warn("Couldn't read from port", e);
+				// only log error, don't die
+				logger.error("Couldn't receive data", e);
 			}
-		}
-
-		private void handleEvent(SerialPortEvent event) throws IOException {
-			//TODO handle multiple sensors-packet sizes
-			byte[] inputBuffer = new byte[26];
-			for (int index = 0; index < inputBuffer.length; index++) {
-				inputBuffer[index] = (byte) inputStream.read();
-			}
-			if (listener == null) {
-				logger.warn("Ignoring event, no listeners: " + event);
-			}
-			StringBuilder builder = new StringBuilder();
-			appendByteArray(builder, inputBuffer);
-			logger.info("Received data [" + builder + "]");
-			//TODO perform checksum of data, discard if bad
-			listener.onData(inputBuffer);
 		}
 	}
 }

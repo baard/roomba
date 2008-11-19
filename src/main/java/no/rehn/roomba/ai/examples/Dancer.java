@@ -1,8 +1,8 @@
 package no.rehn.roomba.ai.examples;
 
-import no.rehn.roomba.Roomba;
-import no.rehn.roomba.Roomba.Mode;
 import no.rehn.roomba.ai.AbstractRoombaProgram;
+import no.rehn.roomba.ui.RoombaBean;
+import no.rehn.roomba.ui.RoombaBean.Mode;
 
 /**
  * Robot dance
@@ -14,18 +14,18 @@ import no.rehn.roomba.ai.AbstractRoombaProgram;
 public class Dancer extends AbstractRoombaProgram {
 	static final double MILLI_RADIANS = Math.PI * 2 / 1000;
 	@Override
-	public void onStart(Roomba roomba) {
+	public void onStart(RoombaBean roomba) {
 		// must enable safe-mode before setting parameters
 		roomba.setMode(Mode.SAFE);
 	}
 	
 	@Override
-	public void onExit(Roomba roomba) {
+	public void onExit(RoombaBean roomba) {
 		// need to stop the dancing robot
 		roomba.stop();
 	}
 	
-	public void onTick(Roomba roomba, long currentTime) {
+	public void onTick(RoombaBean roomba, long currentTime) {
 		// forward/backward in 2 sec sin-curve
 		double velocity = Math.sin(MILLI_RADIANS * currentTime / 2);
 		// scale to -127..127

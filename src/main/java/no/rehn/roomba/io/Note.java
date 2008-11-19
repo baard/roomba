@@ -1,5 +1,6 @@
-package no.rehn.roomba.tunes;
+package no.rehn.roomba.io;
 
+//TODO doc
 public class Note {
 	final int note; // midi note number
 

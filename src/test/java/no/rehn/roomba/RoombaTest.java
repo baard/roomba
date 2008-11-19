@@ -1,9 +1,10 @@
 package no.rehn.roomba;
 
+import no.rehn.roomba.ui.RoombaBean;
 import junit.framework.TestCase;
 
 public class RoombaTest extends TestCase {
-	Roomba roomba = new Roomba();
+	RoombaBean roomba = new RoombaBean();
 	public void testSetVelocity() {
 		roomba.setVelocity(10);
 		assertEquals(10, roomba.getVelocity());

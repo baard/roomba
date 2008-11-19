@@ -7,6 +7,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
+import no.rehn.roomba.io.Note;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -83,7 +85,7 @@ public class RTTTLParser {
 			int duration = parsedNote.getDuration(defaultDuration);
 			duration = to64ths(bpm, duration, parsedNote.isSpecialDuration());
 			if (lastDurationRounding < -0.5 || lastDurationRounding > 0.5) {
-				logger.info("Correcting after excessive rounding: "+ lastDurationRounding);
+				logger.debug("Correcting after excessive rounding: "+ lastDurationRounding);
 				if (lastDurationRounding < 0) {
 					duration += Math.round(lastDurationRounding);
 				}
@@ -92,10 +94,10 @@ public class RTTTLParser {
 				}
 				// keep non-adjusted rounding
 				lastDurationRounding = lastDurationRounding - Math.round(lastDurationRounding);
-				logger.info("Rounding after correction: "+ lastDurationRounding);
+				logger.debug("Rounding after correction: "+ lastDurationRounding);
 			}
 			
-			logger.info("Parsed {} as note {} with duration {}, note [duration={}, note={}, scale={}, specialDuration={}]", new Object[] {
+			logger.debug("Parsed {} as note {} with duration {}, note [duration={}, note={}, scale={}, specialDuration={}]", new Object[] {
 					rawNote, tone, duration, parsedNote.getDuration(), parsedNote.getNote(), parsedNote.getScale(), parsedNote.isSpecialDuration()});
 			notes.add(new Note(tone, duration));
 		}
@@ -110,7 +112,7 @@ public class RTTTLParser {
 			durationIn64ths = (60*4*64)/((duration*(1 + 0.5))*bpm);
 		}
 		double durationRounding = (((int) durationIn64ths) - durationIn64ths);
-		logger.info("Rounding: " + durationRounding);
+		logger.debug("Rounding: " + durationRounding);
 		lastDurationRounding += durationRounding;
 		return (int) durationIn64ths;
 	}

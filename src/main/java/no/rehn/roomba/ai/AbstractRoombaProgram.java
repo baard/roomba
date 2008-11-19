@@ -1,6 +1,6 @@
 package no.rehn.roomba.ai;
 
-import no.rehn.roomba.Roomba;
+import no.rehn.roomba.ui.RoombaBean;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,18 +18,18 @@ public abstract class AbstractRoombaProgram implements RoombaProgram {
 	/**
 	 * Override in subclasses
 	 */
-	public void onExit(Roomba roomba) {
+	public void onExit(RoombaBean roomba) {
 	}
 
 	/**
 	 * Override in subclasses
 	 */
-	public void onStart(Roomba roomba) {
+	public void onStart(RoombaBean roomba) {
 	}
 
 	/**
 	 * Override in subclasses
 	 */
-	public void onTick(Roomba roomba, long currentTime) {
+	public void onTick(RoombaBean roomba, long currentTime) {
 	}
 }

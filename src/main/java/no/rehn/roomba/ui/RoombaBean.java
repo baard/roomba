@@ -1,4 +1,4 @@
-package no.rehn.roomba;
+package no.rehn.roomba.ui;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -12,8 +12,8 @@ import no.rehn.roomba.tunes.Song;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
-public class Roomba {
+//TODO doc
+public class RoombaBean {
 	final Logger logger = LoggerFactory.getLogger(getClass());
 	public enum Mode {
 		FULL, SAFE, PASSIVE, POWER_OFF
@@ -164,7 +164,7 @@ public class Roomba {
 
 	public void addPropertyChangeListener(PropertyChangeListener listener) {
 		if (SwingUtilities.isEventDispatchThread()) {
-			// we wrap this listener to work in the dispatcht-thread
+			//TODO remove from model-package, is a gui-thingy
 			pcs.addPropertyChangeListener(new AWTPropertyListenerWrapper(listener));
 		}
 		else {
@@ -420,4 +420,43 @@ public class Roomba {
 	public int getCapacity() {
 		return capacity;
 	}
+	
+	private boolean cliffRight;
+	private boolean cliffLeft;
+	private boolean cliffLeftFront;
+	private boolean cliffRightFront;
+
+	public boolean isCliffLeft() {
+		return cliffLeft;
+	}
+
+	public void setCliffLeft(boolean cliffLeft) {
+		pcs.firePropertyChange("cliffLeft", this.cliffLeft, this.cliffLeft = cliffLeft);
+	}
+
+	public boolean isCliffLeftFront() {
+		return cliffLeftFront;
+	}
+
+	public void setCliffLeftFront(boolean cliffLeftFront) {
+		pcs.firePropertyChange("cliffLeftFront", this.cliffLeftFront, this.cliffLeftFront = cliffLeftFront);
+	}
+
+	public boolean isCliffRight() {
+		return cliffRight;
+	}
+
+	public void setCliffRight(boolean cliffRight) {
+		pcs.firePropertyChange("cliffRight", this.cliffRight, this.cliffRight = cliffRight);
+	}
+
+	public boolean isCliffRightFront() {
+		return cliffRightFront;
+	}
+
+	public void setCliffRightFront(boolean cliffRightFront) {
+		pcs.firePropertyChange("cliffRightFront", this.cliffRightFront, this.cliffRightFront = cliffRightFront);
+	}
+
+	
 }

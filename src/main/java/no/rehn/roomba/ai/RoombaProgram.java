@@ -1,6 +1,6 @@
 package no.rehn.roomba.ai;
 
-import no.rehn.roomba.Roomba;
+import no.rehn.roomba.ui.RoombaBean;
 
 /**
  * A Roomba Program
@@ -17,7 +17,7 @@ public interface RoombaProgram {
 	 * 
 	 * @param roomba The robot to operate
 	 */
-	void onStart(Roomba roomba);
+	void onStart(RoombaBean roomba);
 
 	/**
 	 * This method is called when the program is stopped.
@@ -25,7 +25,7 @@ public interface RoombaProgram {
 	 * 
 	 * @param roomba The robot to operate
 	 */
-	void onExit(Roomba roomba);
+	void onExit(RoombaBean roomba);
 	
 	/**
 	 * This method is called every n-th millisecond,
@@ -34,7 +34,7 @@ public interface RoombaProgram {
 	 * @param roomba The robot to operate
 	 * @param currentTime The current time for this tick in millis
 	 */
-	void onTick(Roomba roomba, long currentTime);
+	void onTick(RoombaBean roomba, long currentTime);
 	
 	/**
 	 * Provide a description of the program. To be used

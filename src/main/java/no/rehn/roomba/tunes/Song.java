@@ -2,6 +2,8 @@ package no.rehn.roomba.tunes;
 
 import java.util.List;
 
+import no.rehn.roomba.io.Note;
+
 
 public class Song {
 	List<Note> notes;

@@ -1,4 +1,4 @@
-package no.rehn.roomba;
+package no.rehn.roomba.ui;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;

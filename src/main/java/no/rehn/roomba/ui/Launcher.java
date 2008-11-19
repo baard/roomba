@@ -1,4 +1,4 @@
-package no.rehn.roomba;
+package no.rehn.roomba.ui;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -12,7 +12,9 @@ import no.rehn.roomba.ai.RoombaProgram;
 import no.rehn.roomba.ai.examples.Dancer;
 import no.rehn.roomba.ai.examples.JukeBox;
 import no.rehn.roomba.ai.examples.PowerLedEffects;
+import no.rehn.roomba.io.Roomba5xxDevice;
 import no.rehn.roomba.io.RoombaConnectionRxTxImpl;
+import no.rehn.roomba.io.RoombaDevice;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,8 +27,9 @@ public class Launcher {
 		new Launcher().run(args);
 	}
 	
-	CommandHandler commandListener;
-	Roomba model;
+	ModelDeviceMapper commandHandler;
+	RoombaBean model;
+	RoombaDevice device;
 	
 	RoombaProgram[] programs = {
 			new PowerLedEffects(),
@@ -41,11 +44,14 @@ public class Launcher {
 		connection.open();
 		
 
-		model = new Roomba();
-		commandListener = new CommandHandler(connection,
-				model);
-		// must connect to send start-command
-		connection.setListener(commandListener);
+		model = new RoombaBean();
+		device = new Roomba5xxDevice(connection);
+		commandHandler = new ModelDeviceMapper(model, device);
+		
+		DeviceBandwidthMonitor bandwidthMonitor = new DeviceBandwidthMonitor(device);
+		Thread eventFirer = new Thread(bandwidthMonitor, "bandwidth-monitor");
+		eventFirer.setDaemon(true);
+		eventFirer.start();
 
 		setConnected(true);
 
@@ -54,16 +60,16 @@ public class Launcher {
 		final GroovyShell shell = new GroovyShell();
 		shell.setVariable("model", model);
 		shell.setVariable("executor", this);
-		shell.setVariable("handler", commandListener);
+		shell.setVariable("bandwidthMonitor", bandwidthMonitor);
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				shell.evaluate(getClass().getResourceAsStream(
-				"/no/rehn/roomba/RoombaView.groovy"));
+				"/no/rehn/roomba/ui/RoombaView.groovy"));
 			}
 		});
 
 		model.start();
-		commandListener.flushCommands();
+		commandHandler.flushCommands();
 		RoombaProgram previous = null;
 		while (!shutdown) {
 			if (program != previous) {
@@ -71,25 +77,25 @@ public class Launcher {
 				if (previous != null) {
 					logger.info("Stopping program '{}'", previous);
 					previous.onExit(model);
-					commandListener.flushCommands();
+					commandHandler.flushCommands();
 				}
 				if (program != null) {
 					logger.info("Starting program '{}'", program);
 					program.onStart(model);
-					commandListener.flushCommands();
+					commandHandler.flushCommands();
 				}
 				previous = program;
 			}
 			if (program != null) {
 				program.onTick(model, System.currentTimeMillis());
 			}
-			commandListener.flushCommands();
+			commandHandler.flushCommands();
 			Thread.sleep(updateSpeed);
 		}
 		if (program != null) {
 			program.onExit(model);
 		}
-		commandListener.flushCommands();
+		commandHandler.flushCommands();
 		logger.info("exiting");
 		synchronized (shutdownHook) {
 			shutdownHook.notify();
@@ -113,13 +119,11 @@ public class Launcher {
 	}
 	
 	public void setConnected(boolean connect) {
-		if (this.connected != connect) {
-			if (connect) {
-				model.addPropertyChangeListener(commandListener);
-			}
-			else {
-				model.removePropertyChangeListener(commandListener);
-			}
+		if (!connect) {
+			model.removePropertyChangeListener(commandHandler);
+		}
+		else {
+			model.addPropertyChangeListener(commandHandler);
 		}
 		this.connected = connect;
 	}

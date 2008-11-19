@@ -1,14 +1,14 @@
-package no.rehn.roomba
+package no.rehn.roomba.ui
 
 import groovy.swing.SwingBuilder
 import net.miginfocom.swing.MigLayout 
 import javax.swing.WindowConstants as WC
 import groovy.beans.Bindable
-import no.rehn.roomba.Roomba.Mode
 import javax.swing.JSlider
 import javax.swing.JTabbedPane
 import javax.swing.DefaultComboBoxModel
 import no.rehn.roomba.tunes.RTTTLParser
+import no.rehn.roomba.ui.RoombaBean.Mode
 
 def rtttlParser = new RTTTLParser()
 
@@ -55,17 +55,17 @@ def frame = SwingBuilder.build {
    			    bind(source: updateSpeed, sourceProperty:'value', target:executor , targetProperty:'updateSpeed')
 				label(text: "Sending (bit/s):")
 				progressBar(
-					string: bind {handler.sent}, 
+					string: bind {bandwidthMonitor.sent * 8}, 
 					stringPainted: true, 
-					value: bind {handler.sent},
+					value: bind {bandwidthMonitor.sent * 8},
 					maximum: 56000,
 					constraints:'wrap,grow'
 				)
 				label(text: "Receiving (bit/s):")
 				progressBar(
-					string: bind {handler.received}, 
+					string: bind {bandwidthMonitor.received * 8}, 
 					stringPainted: true, 
-					value: bind {handler.received},
+					value: bind {bandwidthMonitor.received * 8},
 					maximum: 56000,
 					constraints:'wrap,grow'
 				)
@@ -243,6 +243,26 @@ def frame = SwingBuilder.build {
         		    	constraints:'wrap, grow'
         		    )
         		    separator(constraints: 'wrap')
+    	    		checkBox(
+    	    			text:'Cliff left front', 
+    	    			selected: bind {model.cliffLeftFront},
+    	    			enabled: false, constraints:'grow'
+    	    		)
+    	    		checkBox(
+    	    			text:'Cliff left', 
+    	    			selected: bind {model.cliffLeft},
+    	    			enabled: false, constraints:'wrap, grow'
+    	    		)
+    	    		checkBox(
+    	    			text:'Cliff right front', 
+    	    			selected: bind {model.cliffRightFront},
+    	    			enabled: false, constraints:'grow'
+    	    		)
+    	    		checkBox(
+    	    			text:'Cliff right', 
+    	    			selected: bind {model.cliffRight},
+    	    			enabled: false, constraints:'wrap, grow'
+    	    		)
     	    		checkBox(
     	    			text:'Wheels dropped', 
     	    			selected: bind {model.wheelDropped},

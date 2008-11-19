@@ -1,6 +1,7 @@
 package no.rehn.roomba.tunes;
 
 import junit.framework.TestCase;
+import no.rehn.roomba.tunes.RTTTLNote;
 import no.rehn.roomba.tunes.RTTTLParser;
 
 public class RTTTLParserTest extends TestCase {
